@@ -23,35 +23,43 @@ int bookOptions() {
 void addBook() {
 	string bookTitle, bookAuthor, bookDetail, line;
 	int count = 0;
+	int x;
+	cout << "number of books : ";
+	cin >> x;
+	for (int i = 0; i < x; i++) {
 
-	cout << endl << "--- Provide Book Details ---" << endl;
-	cout << "Title: ";
-	getline(cin, bookTitle);
-	cout << "Author: ";
-	getline(cin, bookAuthor);
 
-	// reading file for number of books
-	ifstream countData("library.dat");
-	while (getline(countData, line)) {
-		count++;
+
+		cout << endl << "--- Provide Book Details ---" << endl;
+		cout << "Title: ";
+		cin >> bookTitle;
+		cout << "Author: ";
+		cin >> bookAuthor;
+
+		// reading file for number of books
+		ifstream countData("library.dat");
+		while (getline(countData, line)) {
+			count++;
+		}
+
+		countData.close();
+
+		// open file for writing
+		ofstream writeToLibrary;
+
+		writeToLibrary.open("library.dat", ios::app);
+
+		bookDetail = to_string(count+1) + ", " + bookTitle + ", " + bookAuthor;
+
+		// write
+		writeToLibrary << bookDetail << endl;
+
+		// close the opened file.
+		writeToLibrary.close();
+
+		cout << "Book added: " << bookDetail << endl;
 	}
-
-	countData.close();
-
-	// open file for writing
-	ofstream writeToLibrary;
-
-	writeToLibrary.open("library.dat", ios::app);
-
-	bookDetail = to_string(count) + ", " + bookTitle + ", " + bookAuthor;
-
-	// write
-	writeToLibrary << bookDetail << endl;
-
-	// close the opened file.
-	writeToLibrary.close();
-
-	cout << "Book added: " << bookDetail << endl;
+	
 }
 
 
@@ -115,6 +123,11 @@ void UpdateBook() {
 
 
 void DeleteBook() {
+	int x;
+	cout << "number of books : ";
+	cin >> x;
+	for (int i = 0; i < x; i++) {
+
 	cout << endl << "--- Delete Book ---" << endl;
 	string id;
 	cout << "Enter Book ID: ";
@@ -168,6 +181,7 @@ void DeleteBook() {
 
 	}
 	else cout << "No book found with ID " << id << endl;
+	}
 }
 
 
