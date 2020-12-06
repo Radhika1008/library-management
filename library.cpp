@@ -87,7 +87,7 @@ void UpdateBook() {
 	string strTemp;
 	while (getline(data, strTemp))
 	{
-		size_t found = strTemp.find(id);
+		size_t found = strTemp.rfind(id + " ", 0);
 		if (found != string::npos) {
 			string title, author;
 
@@ -154,7 +154,7 @@ void DeleteBook() {
 	bool delBook = false;
 	while (getline(data, strTemp))
 	{
-		size_t found = strTemp.find(id);
+		size_t found = strTemp.rfind(id+" ", 0);
 		if (found != string::npos) {
 			cout << "Book: " << strTemp << endl;
 			bookExist = true;
