@@ -23,7 +23,7 @@ int bookOptions() {
 
 void addBook() {
 	string bookTitle, bookAuthor, bookDetail, line;
-	int count = 0;
+	int count ;
 	int x;
 	cout << "Number of Books to be added : ";
 	cin >> x;
@@ -38,7 +38,7 @@ void addBook() {
 		cin >> bookAuthor;
 
 		// reading file for number of books
-		
+		count = 0;
 		ifstream countData("library.dat");
 		while (getline(countData, line)) {
 			count++;
