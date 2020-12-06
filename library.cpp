@@ -9,7 +9,9 @@ int bookOptions() {
 	cout << "3. Delete Book" << endl;
 	cout << "4. Show All Books" << endl;
 	cout << "5. Total Number of Books" << endl;
+	cout << "6. Reset Library" << endl;
 	cout << "0. Exit" << endl;
+	cout << "\n";
 	cout << "--- Choose any one option ---" << endl;
 	cout << "Enter one option: ";
 
@@ -27,31 +29,30 @@ void addBook() {
 	int x;
 	cout << "Number of Books to be added : ";
 	cin >> x;
+	cin.ignore();
 	for (int i = 0; i < x; i++) {
-
-
 
 		cout << endl << "--- Provide Book Details ---" << endl;
 		cout << "Title: ";
-		cin >> bookTitle;
+		getline(cin, bookTitle);
 		cout << "Author: ";
-		cin >> bookAuthor;
+		getline(cin, bookAuthor);
 
-		// reading file for number of books
-		count = 0;
-		ifstream countData("library.dat");
-		while (getline(countData, line)) {
-			count++;
-		}
-
+		// reading file for number of book
+		ifstream countData("count.dat");
+		countData >> count;
 		countData.close();
+
+		ofstream ofs("count.dat", ios::trunc);
+		ofs << count + 1;
+		ofs.close();
 
 		// open file for writing
 		ofstream writeToLibrary;
 
 		writeToLibrary.open("library.dat", ios::app);
 
-		bookDetail = to_string(count+1) + ", " + bookTitle + ", " + bookAuthor;
+		bookDetail = to_string(count) + " : " + bookTitle + " BY " + bookAuthor;
 
 		// write
 		writeToLibrary << bookDetail << endl;
@@ -97,7 +98,7 @@ void UpdateBook() {
 			cout << "New Book Author: ";
 			getline(cin, author);
 
-			strTemp = id + ", " + title + ", " + author;
+			strTemp = id + " : " + title + " BY " + author;
 			bookExist = true;
 		}
 		temp << strTemp << endl;
@@ -211,6 +212,16 @@ void totalBooks() {
 	cout << "Total Number of Books are : " << count << endl;
 }
 
+void resetLibrary() {
+	ofstream countData("count.dat", ios::trunc);
+	countData << 1;
+	countData.close();
+
+	ofstream bookData("library.dat", ios::trunc);
+	bookData << "";
+	bookData.close();
+}
+
 void bookActions(int option) {
 	switch (option) {
 	case 1:
@@ -228,17 +239,19 @@ void bookActions(int option) {
 	case 5:
 		totalBooks();
 		break;
-
+	case 6:
+		resetLibrary();
+		break;
 	}
 }
 
 
 void home() {
 	int option = bookOptions();
-	if (option != 0 && option <= 5) {
+	if (option != 0 && option <= 6) {
 		bookActions(option);
 	}
-	else if (option > 5) {
+	else if (option > 6) {
 		cout << endl << "!!! Enter Valid Option !!!" << endl;
 		option = bookOptions();
 	}
@@ -249,14 +262,15 @@ void home() {
 
 
 int main() {
-	cout << "*** WELCOME ***";
-	string yn;
+	cout << "          ****WELCOME****     \n";
+	string choice;
 	while (true) {
-		cout << endl << "--- Library Management System ---" << endl;
+		cout << endl << "--- LIBRARY DATABASE MANAGEMENT ---" << endl;
+		cout << "\n";
 		home();
 		cout << endl << "continue? (y/n) :";
-		cin >> yn;
-		if (yn != "y") break;
+		cin >> choice;
+		if (choice != "y") break;
 	}
 	return 0;
 }
