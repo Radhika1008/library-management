@@ -8,6 +8,7 @@ int bookOptions() {
 	cout << "2. Update Book" << endl;
 	cout << "3. Delete Book" << endl;
 	cout << "4. Show All Books" << endl;
+	cout << "5. Total Number of Books" << endl;
 	cout << "0. Exit" << endl;
 	cout << "--- Choose any one option ---" << endl;
 	cout << "Enter one option: ";
@@ -24,7 +25,7 @@ void addBook() {
 	string bookTitle, bookAuthor, bookDetail, line;
 	int count = 0;
 	int x;
-	cout << "number of books : ";
+	cout << "Number of Books to be added : ";
 	cin >> x;
 	for (int i = 0; i < x; i++) {
 
@@ -37,6 +38,7 @@ void addBook() {
 		cin >> bookAuthor;
 
 		// reading file for number of books
+		
 		ifstream countData("library.dat");
 		while (getline(countData, line)) {
 			count++;
@@ -124,8 +126,10 @@ void UpdateBook() {
 
 void DeleteBook() {
 	int x;
-	cout << "number of books : ";
+	cout << "Number of Books to be deleted : ";
 	cin >> x;
+
+	
 	for (int i = 0; i < x; i++) {
 
 	cout << endl << "--- Delete Book ---" << endl;
@@ -196,6 +200,16 @@ void showBooks() {
 	}
 }
 
+void totalBooks() {
+	int count = 0;
+	string line;
+	ifstream countData("library.dat");
+	while (getline(countData, line)) {
+		count++;
+
+	}
+	cout << "Total Number of Books are : " << count << endl;
+}
 
 void bookActions(int option) {
 	switch (option) {
@@ -211,16 +225,20 @@ void bookActions(int option) {
 	case 4:
 		showBooks();
 		break;
+	case 5:
+		totalBooks();
+		break;
+
 	}
 }
 
 
 void home() {
 	int option = bookOptions();
-	if (option != 0 && option <= 4) {
+	if (option != 0 && option <= 5) {
 		bookActions(option);
 	}
-	else if (option > 4) {
+	else if (option > 5) {
 		cout << endl << "!!! Enter Valid Option !!!" << endl;
 		option = bookOptions();
 	}
