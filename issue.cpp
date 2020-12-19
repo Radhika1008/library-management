@@ -274,7 +274,7 @@ void issueBook() {
 	{
 		size_t found = strTemp.rfind(id + " ", 0);
 		if (found != string::npos) {
-			string student_name, date_of_iss, rollno;
+			string StrIssue, student_name, date_of_iss, rollno;
 
 			cout << "Book: " << strTemp << endl;
 
@@ -285,10 +285,10 @@ void issueBook() {
 			cout << "Date of issue: ";
 			getline(cin, date_of_iss);
 
-			strTemp = id + " : Book issued by" + rollno + student_name + "ON" + date_of_iss;
+			StrIssue = id + " : Book issued by" + rollno + student_name + "ON" + date_of_iss;
 			bookExist = true;
-			iss.open("issue.dat", ios::app); //Temporary file
-			iss << strTemp << endl;
+			iss.open("issue.dat"); //Temporary file
+			iss << StrIssue << endl;
 			iss.close();
 			continue;
 		}
