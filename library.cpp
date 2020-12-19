@@ -3,6 +3,9 @@
 #include<string>
 using namespace std;
 
+
+
+
 int bookOptions() {
 	cout << "1. Add Book" << endl;
 	cout << "2. Update Book" << endl;
@@ -10,6 +13,7 @@ int bookOptions() {
 	cout << "4. Show All Books" << endl;
 	cout << "5. Total Number of Books" << endl;
 	cout << "6. Reset Library" << endl;
+	cout << "7. change password" << endl;
 	cout << "0. Exit" << endl;
 	cout << "\n";
 	cout << "--- Choose any one option ---" << endl;
@@ -25,7 +29,7 @@ int bookOptions() {
 
 void addBook() {
 	string bookTitle, bookAuthor, bookDetail, line;
-	int count ;
+	int count;
 	int x;
 	cout << "Number of Books to be added : ";
 	cin >> x;
@@ -62,7 +66,7 @@ void addBook() {
 
 		cout << "Book added: " << bookDetail << endl;
 	}
-	
+
 }
 
 
@@ -130,62 +134,62 @@ void DeleteBook() {
 	cout << "Number of Books to be deleted : ";
 	cin >> x;
 
-	
+
 	for (int i = 0; i < x; i++) {
 
-	cout << endl << "--- Delete Book ---" << endl;
-	string id;
-	cout << "Enter Book ID: ";
-	cin >> id;
-	cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		cout << endl << "--- Delete Book ---" << endl;
+		string id;
+		cout << "Enter Book ID: ";
+		cin >> id;
+		cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-	bool bookExist = false;
-	ifstream data("library.dat");
-	ofstream temp;
-	temp.open("temp.dat", ios::app); //Temporary file
+		bool bookExist = false;
+		ifstream data("library.dat");
+		ofstream temp;
+		temp.open("temp.dat", ios::app); //Temporary file
 
-	if (!data || !temp)
-	{
-		cout << "Error opening files!" << endl;
-		return;
-	}
-
-	string strTemp;
-	bool delBook = false;
-	while (getline(data, strTemp))
-	{
-		size_t found = strTemp.rfind(id+" ", 0);
-		if (found != string::npos) {
-			cout << "Book: " << strTemp << endl;
-			bookExist = true;
-			delBook = true;
-		}
-		if (delBook) {
-			delBook = false;
-			continue;
-		}
-		temp << strTemp << endl;
-	}
-
-	data.close();
-	temp.close();
-
-	if (bookExist) {
-
-		// delete old file
-		if (remove("library.dat") != 0)
-			perror("Error deleting file");
-
-		// rename new file to old file
-		if (rename("temp.dat", "library.dat")) {
-			perror("Error renaming");
+		if (!data || !temp)
+		{
+			cout << "Error opening files!" << endl;
 			return;
 		}
 
-		cout << "Book Deleted" << endl;
+		string strTemp;
+		bool delBook = false;
+		while (getline(data, strTemp))
+		{
+			size_t found = strTemp.rfind(id + " ", 0);
+			if (found != string::npos) {
+				cout << "Book: " << strTemp << endl;
+				bookExist = true;
+				delBook = true;
+			}
+			if (delBook) {
+				delBook = false;
+				continue;
+			}
+			temp << strTemp << endl;
+		}
 
-	}
-	else cout << "No book found with ID " << id << endl;
+		data.close();
+		temp.close();
+
+		if (bookExist) {
+
+			// delete old file
+			if (remove("library.dat") != 0)
+				perror("Error deleting file");
+
+			// rename new file to old file
+			if (rename("temp.dat", "library.dat")) {
+				perror("Error renaming");
+				return;
+			}
+
+			cout << "Book Deleted" << endl;
+
+		}
+		else cout << "No book found with ID " << id << endl;
 	}
 }
 
@@ -221,8 +225,30 @@ void resetLibrary() {
 	bookData << "";
 	bookData.close();
 }
+void changepass(char password[10])
+{
+	int m = 1;
+	char newpass[10];
+	cout << "the old password is " << endl;
+	cout << password << endl;
+	cout << "remember:" << endl;
+	
+	cout << "1.the passsword must start with a capital letter" << endl;
+	while (m == 1)
+	{
+		cin >> newpass;
+		if (newpass[0] >= 'A' && newpass[0] <= 'Z' )
+		{
+			password = newpass;
+			m = 0;
+			cout << "the password is changed";
+		}
+		else
+			cout << "the password is not according to the regulations ..try again";
 
-void bookActions(int option) {
+	}
+}
+void bookActions(int option,char password[10]) {
 	switch (option) {
 	case 1:
 		addBook();
@@ -242,16 +268,19 @@ void bookActions(int option) {
 	case 6:
 		resetLibrary();
 		break;
+	case 7:
+		changepass(password);
+		break;
 	}
 }
 
 
-void home() {
+void home(char password[10]) {
 	int option = bookOptions();
-	if (option != 0 && option <= 6) {
-		bookActions(option);
+	if (option != 0 && option <= 7) {
+		bookActions(option,password);
 	}
-	else if (option > 6) {
+	else if (option > 7) {
 		cout << endl << "!!! Enter Valid Option !!!" << endl;
 		option = bookOptions();
 	}
@@ -262,15 +291,28 @@ void home() {
 
 
 int main() {
-	cout << "          ****WELCOME****     \n";
+	cout << "          ****WELCOME****     \n\n";
 	string choice;
+	char password[10] = "Admin";
+	char pass[10];
+
+	cout << "enter the password ";
+	cin >> pass;
+	while (strcmp(password, pass) != 0) {
+		cout << "the password entered is wrong\n\n";
+		cout << "enter the password ";
+		cin >> pass;
+	}
+
 	while (true) {
 		cout << endl << "--- LIBRARY DATABASE MANAGEMENT ---" << endl;
 		cout << "\n";
-		home();
+		
+		home(password);
 		cout << endl << "continue? (y/n) :";
 		cin >> choice;
-		if (choice != "y") break;
+		if (choice != "y")
+			break;
 	}
 	return 0;
 }
