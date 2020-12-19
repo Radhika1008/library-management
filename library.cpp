@@ -4,8 +4,6 @@
 using namespace std;
 
 
-
-
 int bookOptions() {
 	cout << "1. Add Book" << endl;
 	cout << "2. Update Book" << endl;
@@ -14,6 +12,8 @@ int bookOptions() {
 	cout << "5. Total Number of Books" << endl;
 	cout << "6. Reset Library" << endl;
 	cout << "7. change password" << endl;
+	cout << "8. issue book" << endl;
+	cout << "9. Show All Issued Books" << endl;
 	cout << "0. Exit" << endl;
 	cout << "\n";
 	cout << "--- Choose any one option ---" << endl;
@@ -248,6 +248,83 @@ void changepass(char password[10])
 
 	}
 }
+
+void issueBook() {
+	cout << endl << "--- Issue Book ---" << endl;
+	string id;
+	cout << "Enter Book ID: ";
+	cin >> id;
+	cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+	bool bookExist = false;
+	ifstream data("library.dat");
+	ofstream temp;
+	ofstream iss;
+	temp.open("temp.dat", ios::app); //Temporary file
+
+	if (!data || !temp)
+	{
+		cout << "Error opening files!" << endl;
+		return;
+	}
+
+	string strTemp;
+	while (getline(data, strTemp))
+	{
+		size_t found = strTemp.rfind(id + " ", 0);
+		if (found != string::npos) {
+			string StrIssue, student_name, date_of_iss, rollno;
+
+			cout << "Book: " << strTemp << endl;
+
+			cout << "Student roll number: ";
+			getline(cin, rollno);
+			cout << "Student name: ";
+			getline(cin, student_name);
+			cout << "Date of issue: ";
+			getline(cin, date_of_iss);
+
+			StrIssue = id + " : Book issued by " + rollno + " " + student_name + " ON " + date_of_iss;
+			bookExist = true;
+			iss.open("issue.dat"); //Temporary file
+			iss << StrIssue << endl;
+			iss.close();
+			continue;
+		}
+		temp << strTemp << endl;
+	}
+
+	data.close();
+	temp.close();
+
+
+	if (bookExist) {
+		// delete old file
+		if (remove("library.dat") != 0)
+			perror("Error deleting file");
+
+		// rename new file to old file
+		if (rename("temp.dat", "library.dat")) {
+			perror("Error renaming");
+			return;
+		}
+
+		cout << "Book Issued" << endl;
+
+	}
+	else cout << "No book found with ID " << id << endl;
+
+}
+void ShowIssuedBooks() {
+	cout << "--- List of Issued books ---" << endl;
+
+	ifstream data("issue.dat");
+	string row;
+	while (getline(data, row))
+	{
+		cout << row << endl;
+	}
+}
 void bookActions(int option,char password[10]) {
 	switch (option) {
 	case 1:
@@ -271,16 +348,22 @@ void bookActions(int option,char password[10]) {
 	case 7:
 		changepass(password);
 		break;
-	}
+	case 8:
+		issueBook();
+		break;
+	case 9:
+		ShowIssuedBooks();
+		break;
+    }
 }
 
 
 void home(char password[10]) {
 	int option = bookOptions();
-	if (option != 0 && option <= 7) {
+	if (option != 0 && option <= 9) {
 		bookActions(option,password);
 	}
-	else if (option > 7) {
+	else if (option > 9) {
 		cout << endl << "!!! Enter Valid Option !!!" << endl;
 		option = bookOptions();
 	}
