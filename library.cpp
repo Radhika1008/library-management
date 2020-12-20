@@ -224,20 +224,23 @@ void resetLibrary() {
 	ofstream bookData("library.dat", ios::trunc);
 	bookData << "";
 	bookData.close();
+
+	ofstream issueBook("issue.dat", ios::trunc);
+	issueBook << "";
+	issueBook.close();
 }
 void changepass(char password[10])
 {
 	int m = 1;
 	char newpass[10];
-	cout << "the old password is " << endl;
-	cout << password << endl;
-	cout << "remember:" << endl;
-	
-	cout << "1.the passsword must start with a capital letter" << endl;
+	string current;
+
+	cout << "Remember: The passsword must start with a capital letter" << endl;
+	cout << "Enter new password: ";
 	while (m == 1)
 	{
 		cin >> newpass;
-		if (newpass[0] >= 'A' && newpass[0] <= 'Z' )
+		if (newpass[0] >= 'A' && newpass[0] <= 'Z')
 		{
 			password = newpass;
 			m = 0;
@@ -245,8 +248,10 @@ void changepass(char password[10])
 		}
 		else
 			cout << "the password is not according to the regulations ..try again";
-
 	}
+	ofstream passDat("pass.dat", ios::trunc);
+	passDat << newpass;
+	passDat.close();
 }
 
 void issueBook() {
@@ -286,7 +291,7 @@ void issueBook() {
 
 			StrIssue = id + " : Book issued by " + rollno + " " + student_name + " ON " + date_of_iss;
 			bookExist = true;
-			iss.open("issue.dat"); //Temporary file
+			iss.open("issue.dat", ios::app); //Temporary file
 			iss << StrIssue << endl;
 			iss.close();
 			continue;
@@ -325,7 +330,7 @@ void ShowIssuedBooks() {
 		cout << row << endl;
 	}
 }
-void bookActions(int option,char password[10]) {
+void bookActions(int option, char password[10]) {
 	switch (option) {
 	case 1:
 		addBook();
@@ -354,14 +359,14 @@ void bookActions(int option,char password[10]) {
 	case 9:
 		ShowIssuedBooks();
 		break;
-    }
+	}
 }
 
 
 void home(char password[10]) {
 	int option = bookOptions();
 	if (option != 0 && option <= 9) {
-		bookActions(option,password);
+		bookActions(option, password);
 	}
 	else if (option > 9) {
 		cout << endl << "!!! Enter Valid Option !!!" << endl;
@@ -376,9 +381,13 @@ void home(char password[10]) {
 int main() {
 	cout << "          ****WELCOME****     \n\n";
 	string choice;
-	char password[10] = "Admin";
+	char password[10];
 	char pass[10];
 
+	ifstream Pass("pass.dat");
+	Pass >> password;
+	Pass.close();
+	
 	cout << "enter the password ";
 	cin >> pass;
 	while (strcmp(password, pass) != 0) {
@@ -390,7 +399,7 @@ int main() {
 	while (true) {
 		cout << endl << "--- LIBRARY DATABASE MANAGEMENT ---" << endl;
 		cout << "\n";
-		
+
 		home(password);
 		cout << endl << "continue? (y/n) :";
 		cin >> choice;
